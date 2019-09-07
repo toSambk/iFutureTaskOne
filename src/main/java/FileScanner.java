@@ -1,25 +1,18 @@
-import javax.swing.*;
 import java.io.*;
-import java.nio.charset.Charset;
 
 
-public class DefiniteFile {
+public class FileScanner {
 
     private File file;
 
     private String text;
 
-
-    DefiniteFile(File file, String text) {
+    FileScanner(File file, String text) {
         this.file = file;
         this.text = text;
     }
 
-    DefiniteFile(File file) {
-        this.file = file;
-    }
-
-    public boolean manage() {
+    public boolean search() {
         boolean result = false;
         try(BufferedReader in = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file)))) {
@@ -41,13 +34,5 @@ public class DefiniteFile {
         }
         return result;
     }
-
-
-
-
-
-
-
-
 
 }

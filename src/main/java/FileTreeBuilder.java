@@ -1,17 +1,12 @@
-import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import java.io.File;
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
-public class FileSearchManage
+public class FileTreeBuilder
 {
 
     private List<File> files;
@@ -29,10 +24,10 @@ public class FileSearchManage
         text = "Java";
     }
 
-    public void scan()
+    public void execute()
     {
         files = new ArrayList<>();
-        FutureTask task = new FutureTask(new ScanDir(directory.toFile(), ext));
+        FutureTask task = new FutureTask(new FileReaderThread(directory.toFile(), ext));
         Thread thread = new Thread(task);
         thread.start();
         DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode();
@@ -87,14 +82,14 @@ public class FileSearchManage
         }
     }
 
-    class ScanDir implements Callable<MutableTreeNode> {
+    class FileReaderThread implements Callable<MutableTreeNode> {
 
         private File node;
         private String ext;
         private ExecutorService executor = Executors.newFixedThreadPool(8);
         List<String> list = new ArrayList<>();
 
-        public ScanDir(File node, String ext) {
+        public FileReaderThread(File node, String ext) {
             this.node = node;
             this.ext = ext;
         }
@@ -108,9 +103,9 @@ public class FileSearchManage
                if (node.listFiles() != null) {
                    for (File child : node.listFiles()) {
                        if (child.isDirectory()) {
-                               results.add(executor.submit(new ScanDir(child, ext)));
+                               results.add(executor.submit(new FileReaderThread(child, ext)));
                        } else {
-                           if (child.getName().endsWith("." + ext) && new DefiniteFile(child, text).manage()) {
+                           if (child.getName().endsWith("." + ext) && new FileScanner(child, text).search()) {
                                files.add(child);
                                ret.add(new DefaultMutableTreeNode(child.getName()));
                            }
