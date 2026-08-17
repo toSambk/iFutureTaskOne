@@ -1,14 +1,52 @@
 # iFutureTaskOne
-Программа для поиска заданного текста в лог файлах.
 
-Приложение позволяет, используя File Dialog, выбрать папку на жестком диске и сканировать её и все подпапки на предмет наличия файла с 
-заданным пользователем расширением и заданным пользователем словом для поиска.
+Desktop Java application for searching text inside log files within a selected directory tree.
 
-Интерфейс разработан с использованием технологии Swing, поэтому оно являетс десктопным, однако при использовании локального сервера
-AjaxSwing становится возможным осуществлять деплой на него.
+## Overview
 
-Результат поиска выводится в левой части приложения в виде дерева файловой системы. В правой части приложения выводится содержимое файла
-с элементами интерфейса, позволяющими осуществлять навигацию по файлу.
+The application lets a user choose a root directory, specify a file extension, and enter the text to search for. It then scans the selected directory and all nested subdirectories, finds matching files, and displays the results in a tree view.
 
-Поиск файлов в директории осуществляется созданием отдельного потока(Callable) на подпапку с использованием ExecutorService. Также
-отдельными потоками происходит чтение файла и поиск по директории.
+The user interface is implemented with Swing. Matching files appear on the left side of the window, while the selected file content is shown on the right side with navigation controls for moving between matches.
+
+## Features
+
+- Choose a root directory through a file chooser
+- Filter files by extension, such as `log`
+- Search file contents for a target string
+- Display matched files in a tree structure
+- Open a matched file and navigate through occurrences
+- Highlight all occurrences in the opened file
+- Use background threads for directory scanning and file reading
+
+## Project Structure
+
+- `Main` starts the Swing application
+- `GUI` contains the desktop interface and search interactions
+- `FileTreeBuilder` traverses directories and builds the result tree
+- `FileScanner` checks whether a file contains the requested text
+
+## Requirements
+
+- Java 8 or newer
+- Maven 3.9+
+
+## Build
+
+```bash
+mvn clean package
+```
+
+The Maven configuration uses UTF-8 source encoding so the project builds consistently on systems where the default platform encoding is not UTF-8.
+
+## Run
+
+```bash
+java -jar target/iFutureTaskOne-1.0.0.jar
+```
+
+You can also run `Main` directly from your IDE.
+
+## Notes
+
+- The project currently has no automated tests.
+- The search UI and file reading logic are implemented as a desktop Swing workflow rather than a web application.
